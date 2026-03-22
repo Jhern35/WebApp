@@ -42,6 +42,7 @@ app.get('/api/users/:email/systems', async (req, res) => {
   res.json(systems);
 });
 
+/* --------------------------  Registration of Irrigation System --------------------- */
 app.post('/api/systems/register', async (req, res) => { 
   const { name, esp32Id, owner, ipAddress } = req.body;
 
@@ -67,6 +68,8 @@ app.post('/api/systems/register', async (req, res) => {
 
 });
 
+
+/* --------------------- GET and POST for Data FROM ESP32 ---------------------- */
 app.post('/api/system/:esp32Id/data', async (req, res) => {
   const {esp32Id } = req.params;
 
@@ -132,6 +135,17 @@ app.get('/api/system/:esp32Id/data', async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch system data" });
   }
+
+});
+
+app.get('/api/system/:esp32Id/control_panel', async (req, res) => {
+  const { esp32Id } = req.params;
+  console.log("ControlPanel mounted");
+  
+  res.json({
+    system: "Test System",
+    recentData: []
+  });
 
 });
 

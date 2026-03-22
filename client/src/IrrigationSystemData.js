@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 function displayValue(value) {
   if (value < 0) {
@@ -10,6 +11,10 @@ function displayValue(value) {
 function SystemData({ esp32Id }) {
   const [data, setData] = useState([]);
   const [systemName, setSystemName] = useState('');
+  const navigate = useNavigate();
+  const goToControl = (esp32Id) => {
+    navigate(`/system/${esp32Id}/control`);
+  };
 
   const fetchData = async () => {
     try {
@@ -38,14 +43,14 @@ function SystemData({ esp32Id }) {
           <table>
             <thead>
               <tr>
-                <th>Timestamp</th>
-                <th>Soil Moisture BC</th>
-                <th>PoP</th>
-                <th>PoP Time</th>
-                <th>QPF</th>
-                <th>QPF Time</th>
+               <th>Timestamp</th>
+                <th>Soil Moisture Before</th>
+                <th>% Chance of Rain</th>
+                <th>Time Window</th>
+                <th>Expected Rainfall</th>
+                <th>Time Window for Expected Rainfall</th>
                 <th>Decision</th>
-                <th>Soil Moisture AD</th>
+                <th>Soil Moisture After</th>
               </tr>
             </thead>
             <tbody>
@@ -62,6 +67,11 @@ function SystemData({ esp32Id }) {
                 </tr>
               ))}
             </tbody>
+            <button
+              className = "ctrl-btn"
+              onClick = {() => goToControl(esp32Id)}
+            >
+              Control Panel</button>
           </table>
         </div>
       )}

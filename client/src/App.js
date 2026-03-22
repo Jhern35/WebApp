@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, BrowserRouter } from "react-router-dom";
 import Dashboard from "./Dashboard";
+import ControlPanel from "./ControlPanel";
 import "./App.css";
 
 function LoginPage() {
@@ -93,6 +94,7 @@ function App() {
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/system/:esp32Id/control" element={<ControlPanel />} />
     </Routes>
   );
 }
