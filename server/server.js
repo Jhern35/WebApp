@@ -4,13 +4,22 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const IrrigationSystem = require('./models/IrrigationSystemSchema');
+//const { default: SystemData } = require("../client/src/IrrigationSystemData");
+const Settings = require('./models/Settings');
 
 const app = express();
 
 console.log("JWT_SECRET:", process.env.JWT_SECRET);
 console.log("MONGO_URI:", process.env.MONGO_URI);
 
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -138,15 +147,68 @@ app.get('/api/system/:esp32Id/data', async (req, res) => {
 
 });
 
+/* ---------------------------------- GET name from system -------------------------- */
 app.get('/api/system/:esp32Id/control_panel', async (req, res) => {
-  const { esp32Id } = req.params;
-  console.log("ControlPanel mounted");
-  
-  res.json({
-    system: "Test System",
-    recentData: []
-  });
+  try {
+    const { esp32Id } = req.params;
 
+    const system = await IrrigationSystem.findOne({ esp32Id });
+    console.log("System from Db", system);
+    console.log("ControlPanel mounted");
+
+    if (!system) {
+      console.log("No system found for esp32Id:", esp32Id);
+      return res.status(404).json({ error: "System not found" });
+    }
+
+    console.log("Requested esp32Id:", esp32Id);
+    console.log("System found:", system.name);
+
+    res.json({
+      system: system,
+      name: system.name
+    });
+
+  } catch (err) {
+    console.error("Server error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+
+});
+
+app.patch('/api/system/:esp32Id/control_panel', async (req, res) => {
+  try {
+    const system = await IrrigationSystem.findOne({ esp32Id: req.params.esp32Id });
+    if (!system) {
+      return res.status(404).json({ error: "System not found" });
+    }
+
+    system.settings = { ...system.settings, ...req.body };
+
+    await system.save();
+    res.json( {message: "Settings updated", system} );
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update settings" });
+  }
+
+});
+
+app.patch('/api/fix-settings', async (req, res) => {
+  try {
+    const systems = await IrrigationSystem.find();
+
+    for (const system of systems) {
+      // If settings is missing, assign an empty object so defaults apply
+      if (!system.settings) system.settings = {};
+      await system.save();
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Migration failed" });
+  }
 });
 
 const PORT = 5000;

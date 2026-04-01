@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
+const Settings = require('./Settings');
 
 const SystemSchema = new mongoose.Schema({
     name: { type: String, required: true },
     owner: { type: String, required: true},
     esp32Id: { type: String, required: true, unique: true },
+    settings: { type: Settings, default: () => ({}) }, 
     ipAddress: { type: String },
     latestData: { 
         soilMoistureBC: Number,

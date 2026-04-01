@@ -37,7 +37,14 @@ function SystemData({ esp32Id }) {
     <div>
       <h2>System: {systemName}</h2>
       {data.length === 0 ? (
+        <>
         <p>No data available yet</p>
+        <button
+              className = "ctrl-btn"
+              onClick = {() => goToControl(esp32Id)}
+            >
+              Control Panel</button>
+          </>
       ) : (
         <div className="table-wrapper">
           <table>
@@ -66,13 +73,14 @@ function SystemData({ esp32Id }) {
                   <td>{entry.soilMoistureAD}</td>
                 </tr>
               ))}
+              <td><button
+                  className = "ctrl-btn"
+                  onClick = {() => goToControl(esp32Id)}
+                >
+                  Control Panel</button>
+                </td>
             </tbody>
-            <button
-              className = "ctrl-btn"
-              onClick = {() => goToControl(esp32Id)}
-            >
-              Control Panel</button>
-          </table>
+            </table>
         </div>
       )}
     </div>
