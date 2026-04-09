@@ -10,6 +10,7 @@ function ControlPanel() {
         sleepOptions: '3',
         autoIrrigation: true,
         moistureThreshold: 0.5,
+        irrigationDuration: 2,
         moistureMin: 0.3,
         moistureMax: 1,
     });
@@ -31,11 +32,14 @@ function ControlPanel() {
                 sleepOptions: json.system?.settings?.sleepOptions ?? prev.sleepOptions,
                 autoIrrigation: json.system?.settings?.autoIrrigation ?? prev.autoIrrigation,
                 moistureThreshold: json.system?.settings?.moistureThreshold ?? prev.moistureThreshold,
+                irrigationDuration: json.system?.settings?.irrigationDuration ?? prev.irrigationDuration,
             }));
         } catch (err) {
             console.error("Error fetching system data:", err);
         }
     };
+
+    const [moistureInput, setMoistureInput] = useState("50");
 
     useEffect(() => {
         if (esp32Id) {
@@ -43,12 +47,15 @@ function ControlPanel() {
         }
     }, [esp32Id]);
 
-    const [moistureInput, setMoistureInput] = useState (
-        Math.round(settingState.moistureThreshold * 100).toString()
-    );
+    useEffect(() => {
+        setMoistureInput(
+            Math.round(settingState.moistureThreshold * 100).toString()
+        );
+    }, [settingState.moistureThreshold]);
 
     const handleMoistureInput = (e) => {
         let valueStr = e.target.value;
+        
         setMoistureInput(valueStr);
 
         let valueNum = parseFloat(valueStr);
@@ -60,6 +67,11 @@ function ControlPanel() {
         handleChange("moistureThreshold", valueNum);
     };
 
+    const handleDuration = (num) => {
+        let value = parseFloat(num);
+        handleChange("irrigationDuration", value);
+    };
+
     const handleChange = (key, value) => {
         setSettingsState(prev => ({ 
             ...prev, 
@@ -67,12 +79,20 @@ function ControlPanel() {
         }));
     };
 
+    const manualIrrigation = async () => {
+        try {
+
+        } catch (err) {
+
+        }
+    }
+
     const saveSettings = async () => {
         try {
             const res = await fetch (
                 `http://localhost:5000/api/system/${esp32Id}/control_panel`,
                 {
-                    method: "Patch",
+                    method: "PATCH",
                     headers: {
                         "Content-Type": "application/json"
                     },
@@ -95,6 +115,8 @@ function ControlPanel() {
             <h2>{systemName}</h2>
 
             <form>
+                {/* For manual irrigation */}
+                
                 {/* Sleep Options Dropdown */}
                 <label>Sleep Options:</label>
                 <select
@@ -112,7 +134,7 @@ function ControlPanel() {
                 <label>Auto Irrigation:</label>
                 <button
                     type="button"
-                    onClick={(e) => handleChange('autoIrrigation', !settingState.autoIrrigation)}>
+                    onClick={() => handleChange('autoIrrigation', !settingState.autoIrrigation)}>
                     {settingState.autoIrrigation ? "ON" : "OFF"}
                 </button>
 
@@ -125,11 +147,30 @@ function ControlPanel() {
                     min={settingState.moistureMin * 100} 
                     max={settingState.moistureMax * 100} 
                 />
-                <span>{Math.round(settingState.moistureThreshold * 100)}%</span>
+
+                {/* Irrigation duration for system */}
+                <label>System Irrigation Duration:</label>
+                <select 
+                    value={settingState.irrigationDuration}
+                    onChange={(e) => handleDuration(e.target.value)}
+                    >
+                        <option value="1">1 min</option>
+                        <option value="2">2 min</option>
+                        <option value="3">3 min</option>
+                        <option value="5">5 min</option>
+                    </select>
 
             </form>
-
-           <td> <button type="button" onClick={saveSettings}> Save Settings </button></td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><button 
+                            type="button"
+                            className='ctrl-btn'
+                            onClick={ (saveSettings) }>Save Settings</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     );
 }

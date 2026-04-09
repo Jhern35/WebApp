@@ -5,7 +5,12 @@ const SystemSchema = new mongoose.Schema({
     name: { type: String, required: true },
     owner: { type: String, required: true},
     esp32Id: { type: String, required: true, unique: true },
-    settings: { type: Settings, default: () => ({}) }, 
+    settings: {
+        sleepOptions: { type: String, default: '3' },
+        autoIrrigation: { type: Boolean, default: true },
+        moistureThreshold: { type: Number, default: 0.5 },
+        irrigationDuration: { type: Number, default: 2},
+    }, 
     ipAddress: { type: String },
     latestData: { 
         soilMoistureBC: Number,

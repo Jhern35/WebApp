@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const IrrigationSystem = require('./models/IrrigationSystemSchema');
 //const { default: SystemData } = require("../client/src/IrrigationSystemData");
-const Settings = require('./models/Settings');
 
 const app = express();
 
@@ -147,13 +146,13 @@ app.get('/api/system/:esp32Id/data', async (req, res) => {
 
 });
 
-/* ---------------------------------- GET name from system -------------------------- */
+/* ---------------------------------- GET system and its name -------------------------- */
 app.get('/api/system/:esp32Id/control_panel', async (req, res) => {
   try {
     const { esp32Id } = req.params;
 
     const system = await IrrigationSystem.findOne({ esp32Id });
-    console.log("System from Db", system);
+    console.log("System from Db", system.settings);
     console.log("ControlPanel mounted");
 
     if (!system) {
@@ -165,7 +164,7 @@ app.get('/api/system/:esp32Id/control_panel', async (req, res) => {
     console.log("System found:", system.name);
 
     res.json({
-      system: system,
+      system: system.settings,
       name: system.name
     });
 
@@ -177,6 +176,7 @@ app.get('/api/system/:esp32Id/control_panel', async (req, res) => {
 });
 
 app.patch('/api/system/:esp32Id/control_panel', async (req, res) => {
+ 
   try {
     const system = await IrrigationSystem.findOne({ esp32Id: req.params.esp32Id });
     if (!system) {
@@ -191,7 +191,7 @@ app.patch('/api/system/:esp32Id/control_panel', async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Failed to update settings" });
   }
-
+ console.log("PATCH body:", req.body);
 });
 
 app.patch('/api/fix-settings', async (req, res) => {
