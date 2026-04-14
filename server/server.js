@@ -4,6 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const IrrigationSystem = require('./models/IrrigationSystemSchema');
+const mqtt = require("mqtt");
 //const { default: SystemData } = require("../client/src/IrrigationSystemData");
 
 const app = express();
@@ -16,6 +17,19 @@ const corsOptions = {
   methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 };
+
+const mqttClient = mqtt.connect({
+  host: "a858338d804742fc8fa976391931d0c1.s1.eu.hivemq.cloud",
+  port: 8883,
+  protocol: "mqtts",
+  username: "Smart_Irrigation",
+  password: "Senior_Design2026",
+});
+
+mqttClient.on("connect", () => {
+  console.log("Connected to the MQTT broker");
+})
+mqttClient.on("error", err => console.log(err));
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
@@ -175,6 +189,7 @@ app.get('/api/system/:esp32Id/control_panel', async (req, res) => {
 
 });
 
+/* --------------------------------- PATCH settings into the database -------------------------- */
 app.patch('/api/system/:esp32Id/control_panel', async (req, res) => {
  
   try {
@@ -209,6 +224,29 @@ app.patch('/api/fix-settings', async (req, res) => {
     console.error(err);
     res.status(500).json({ error: "Migration failed" });
   }
+});
+
+app.post('/api/system/:esp32Id/command', async (req, res) => {
+
+  try {
+    const { esp32Id } = req.params;
+    const { command } = req.body;
+
+    const topic = `system/${esp32Id}/control`;
+    console.log("Button has been clicked");
+    console.log("Topic:", topic);
+    console.log("Command:", command);
+
+    mqttClient.publish(topic, command);
+
+    res.json({
+      success: true,
+      command
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to send command" });
+  }
+  
 });
 
 const PORT = 5000;

@@ -8,7 +8,8 @@ const SystemSchema = new mongoose.Schema({
     settings: {
         sleepOptions: { type: String, default: '3' },
         autoIrrigation: { type: Boolean, default: true },
-        moistureThreshold: { type: Number, default: 0.5 },
+        moistureMin: { type: Number, default: 0.3 },
+        moistureMax: { type: Number, default: 0.7},
         irrigationDuration: { type: Number, default: 2},
     }, 
     ipAddress: { type: String },
@@ -21,7 +22,7 @@ const SystemSchema = new mongoose.Schema({
         QPF: Number,
         //Over what time is the rainfall expected
         QPF_time: Number,
-        decision: Boolean,
+        decision: String,
         //If decicsion is true what is the new moisture %
         soilMoistureAD: Number,
         timestamp: { type: Date, default: Date.now }
@@ -34,7 +35,7 @@ const SystemSchema = new mongoose.Schema({
             PoP_time: Number,
             QPF: Number,
             QPF_time: Number,
-            decision: Boolean,
+            decision: String,
             soilMoistureAD: Number,
             timestamp: { type: Date, default: Date.now }
         }

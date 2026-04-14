@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useParams } from "react-router-dom";
 
 function ControlPanel() {
@@ -9,10 +10,9 @@ function ControlPanel() {
     const [settingState, setSettingsState] = useState({
         sleepOptions: '3',
         autoIrrigation: true,
-        moistureThreshold: 0.5,
         irrigationDuration: 2,
         moistureMin: 0.3,
-        moistureMax: 1,
+        moistureMax: 0.7,
     });
 
     const fetchData = async () => {
@@ -29,17 +29,21 @@ function ControlPanel() {
             // Set settings safely with defaults
             setSettingsState(prev => ({
                 ...prev,
-                sleepOptions: json.system?.settings?.sleepOptions ?? prev.sleepOptions,
-                autoIrrigation: json.system?.settings?.autoIrrigation ?? prev.autoIrrigation,
-                moistureThreshold: json.system?.settings?.moistureThreshold ?? prev.moistureThreshold,
-                irrigationDuration: json.system?.settings?.irrigationDuration ?? prev.irrigationDuration,
+                sleepOptions: json.system?.sleepOptions ?? prev.sleepOptions,
+                autoIrrigation: json.system?.autoIrrigation ?? prev.autoIrrigation,
+                moistureMin: json.system?.moistureMin ?? prev.moistureMin,
+                moistureMax: json.system?.moistureMax ?? prev.moistureMax,
+                irrigationDuration: json.system?.irrigationDuration ?? prev.irrigationDuration,
             }));
         } catch (err) {
             console.error("Error fetching system data:", err);
         }
     };
 
-    const [moistureInput, setMoistureInput] = useState("50");
+    const [moistureMax, setMoistureMaxInput] = useState("");
+    const [moistureMin, setMoistureMinInput] = useState("");
+    const [minErrorHandler, setMinError] = useState("");
+    const [maxErrorHandler, setMaxError] = useState("");
 
     useEffect(() => {
         if (esp32Id) {
@@ -48,23 +52,60 @@ function ControlPanel() {
     }, [esp32Id]);
 
     useEffect(() => {
-        setMoistureInput(
-            Math.round(settingState.moistureThreshold * 100).toString()
+        setMoistureMaxInput(
+            Math.round(settingState.moistureMax * 100).toString()
         );
-    }, [settingState.moistureThreshold]);
+    }, [settingState.moistureMax]);
 
-    const handleMoistureInput = (e) => {
+    useEffect(() => {
+        setMoistureMinInput(
+            Math.round(settingState.moistureMin * 100).toString()
+        );
+    }, [settingState.moistureMin]);
+
+
+    const validateMoistureMin = (min) => {
+        if (isNaN(min)) return setMinError("Invalid number");
+        if (min < 30) {
+            setMinError("Moisture minimum must be 30% or above");
+            return;
+        }
+        if (min >= 50) {
+            setMinError("Moisture minimum cannot be more than 50");
+            return;
+        }
+        handleChange("moistureMin", min/100);
+        console.log("Lost focus, current value:", min);
+        setMinError("");
+        return;
+    };
+
+    const validateMoistureMax = (max) => {
+        if (isNaN(max)) return setMaxError("Invalid number");
+        if (max > 100) {
+            setMaxError("Moisture maximum must be no more than 100%");
+            return;
+        }
+        else if (max < 50) {
+            setMaxError("Maximum moisture percentage cannot be less than 50");
+            return;
+        }
+        handleChange("moistureMax", max/100);
+        console.log("Lost focus, current value:", max);
+        setMaxError("");
+        return;
+    };
+
+    const handleMoistureMinInput = (e) => {
         let valueStr = e.target.value;
-        
-        setMoistureInput(valueStr);
+        let value = parseFloat(valueStr);
+        setMoistureMinInput(value);
+    };
 
-        let valueNum = parseFloat(valueStr);
-        if (isNaN(valueNum)) return;
-
-        valueNum = valueNum / 100;
-        valueNum = Math.max(settingState.moistureMin, Math.min(valueNum, settingState.moistureMax));
-
-        handleChange("moistureThreshold", valueNum);
+    const handleMoistureMaxInput = (e) => {
+        let valueStr = e.target.value;
+        let value = parseFloat(valueStr);
+        setMoistureMaxInput(value);
     };
 
     const handleDuration = (num) => {
@@ -79,13 +120,16 @@ function ControlPanel() {
         }));
     };
 
-    const manualIrrigation = async () => {
-        try {
-
+    const manualIrrigation = async (command) => {
+        try{
+            await axios.post(`http://localhost:5000/api/system/${esp32Id}/command`, {
+                command
+            });
+            console.log("POST sent");
         } catch (err) {
-
+            console.log("Error:", err);
         }
-    }
+    };
 
     const saveSettings = async () => {
         try {
@@ -116,6 +160,18 @@ function ControlPanel() {
 
             <form>
                 {/* For manual irrigation */}
+                <label> Manual Irrigation </label>
+                <button
+                    type="button"
+                    onClick={() => manualIrrigation("Pump_On")}>
+                    Turn On
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => manualIrrigation("Pump_Off")}>
+                    Turn Off
+                </button>
                 
                 {/* Sleep Options Dropdown */}
                 <label>Sleep Options:</label>
@@ -139,14 +195,28 @@ function ControlPanel() {
                 </button>
 
                 {/* Moisture Threshold Slider */}
-                <label>Moisture Threshold (%):</label>
+                <label>Moisture Thresholds (%):</label>
                 <input
                     type="number"
-                    value={moistureInput}
-                    onChange={handleMoistureInput}
-                    min={settingState.moistureMin * 100} 
-                    max={settingState.moistureMax * 100} 
+                    value={moistureMin}
+                    onChange={handleMoistureMinInput}
+                    onBlur={(e) => validateMoistureMin(e.target.value)}
+                    placeholder="Min %" 
                 />
+                {minErrorHandler && (
+                    <p style={{ color: "red" }}>{minErrorHandler}</p>
+                )}
+
+                <input
+                    type="number"
+                    value={moistureMax}
+                    onChange={handleMoistureMaxInput}
+                    onBlur={(e) => validateMoistureMax(e.target.value)}
+                    placeholder="Max %" 
+                />
+                {maxErrorHandler && (
+                    <p style={{ color: "red" }}>{maxErrorHandler}</p>
+                )}
 
                 {/* Irrigation duration for system */}
                 <label>System Irrigation Duration:</label>
