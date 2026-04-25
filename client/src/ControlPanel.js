@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 function ControlPanel() {
     const { esp32Id } = useParams();
     const [systemName, setSystemName] = useState("Unkown System");
+    const navigate = useNavigate();
 
     // Default state ensures no undefined values
     const [settingState, setSettingsState] = useState({
@@ -153,28 +154,42 @@ function ControlPanel() {
         }
     };
 
+    const homePage = () => {
+        navigate("/dashboard");
+    };
+
     return (
-        <div>
-            <h1>Control Panel</h1>
-            <h2>{systemName}</h2>
-
-            <form>
+        <div className="dashboard-page">
+            <nav className="dashboard-nav">
+                 <h1 className="dashboard-nav-title">Control Panel</h1>
+                 <button className="signout-btn" onClick={homePage}>Back to Dashbaord</button>
+            </nav>
+            <h2 className="control-System-title">{systemName}:</h2>
+            
+            <div className="panel">
+                 <form>
                 {/* For manual irrigation */}
-                <label> Manual Irrigation </label>
-                <button
-                    type="button"
-                    onClick={() => manualIrrigation("Pump_On")}>
-                    Turn On
-                </button>
+                <div className="sections">
+                    <label> Manual Irrigation: </label>
+                    <button
+                        type="button"
+                        className="btn"
+                        onClick={() => manualIrrigation("Pump_On")}>
+                        Turn On
+                    </button>
 
-                <button
-                    type="button"
-                    onClick={() => manualIrrigation("Pump_Off")}>
-                    Turn Off
-                </button>
+                    <button
+                        type="button"
+                        className="btn"
+                        onClick={() => manualIrrigation("Pump_Off")}>
+                        Turn Off
+                    </button>
+                </div>
+                
                 
                 {/* Sleep Options Dropdown */}
-                <label>Sleep Options:</label>
+                <div className="sections">
+                    <label>Sleep Options: </label>
                 <select
                     value={settingState.sleepOptions}
                     onChange={(e) => handleChange('sleepOptions', e.target.value)}
@@ -185,62 +200,78 @@ function ControlPanel() {
                     <option value="12">12 hr</option>
                     <option value="24">24 hr</option>
                 </select>
-
+                </div>
+                
                 {/* Auto Irrigation Toggle */}
-                <label>Auto Irrigation:</label>
-                <button
-                    type="button"
-                    onClick={() => handleChange('autoIrrigation', !settingState.autoIrrigation)}>
-                    {settingState.autoIrrigation ? "ON" : "OFF"}
-                </button>
+                <div className="sections">
+                     <label>Auto Irrigation: </label>
+                    <button
+                        type="button"
+                        className="btn"
+                        onClick={() => handleChange('autoIrrigation', !settingState.autoIrrigation)}>
+                        {settingState.autoIrrigation ? "ON" : "OFF"}
+                    </button>
+                </div>
+               
 
                 {/* Moisture Threshold Slider */}
-                <label>Moisture Thresholds (%):</label>
-                <input
-                    type="number"
-                    value={moistureMin}
-                    onChange={handleMoistureMinInput}
-                    onBlur={(e) => validateMoistureMin(e.target.value)}
-                    placeholder="Min %" 
-                />
-                {minErrorHandler && (
-                    <p style={{ color: "red" }}>{minErrorHandler}</p>
-                )}
-
-                <input
-                    type="number"
-                    value={moistureMax}
-                    onChange={handleMoistureMaxInput}
-                    onBlur={(e) => validateMoistureMax(e.target.value)}
-                    placeholder="Max %" 
-                />
-                {maxErrorHandler && (
-                    <p style={{ color: "red" }}>{maxErrorHandler}</p>
-                )}
+                <div className="sections">
+                    <label>Moisture Thresholds (%): </label>
+                    <div className="sections-threshold">
+                        <label>Minimum Threshold: </label>
+                        <input
+                        type="number"
+                        value={moistureMin}
+                        onChange={handleMoistureMinInput}
+                        onBlur={(e) => validateMoistureMin(e.target.value)}
+                        placeholder="Min %" 
+                        />
+                        {minErrorHandler && (
+                            <p style={{ color: "red" }}>{minErrorHandler}</p>
+                        )}
+                    </div>
+                    
+                    <div className="sections-threshold">
+                        <label>Maximum Threshold: </label>
+                        <input
+                        type="number"
+                        value={moistureMax}
+                        onChange={handleMoistureMaxInput}
+                        onBlur={(e) => validateMoistureMax(e.target.value)}
+                        placeholder="Max %" 
+                        />
+                        {maxErrorHandler && (
+                            <p style={{ color: "red" }}>{maxErrorHandler}</p>
+                        )}
+                    </div>
+                </div>
+                
 
                 {/* Irrigation duration for system */}
-                <label>System Irrigation Duration:</label>
-                <select 
-                    value={settingState.irrigationDuration}
-                    onChange={(e) => handleDuration(e.target.value)}
-                    >
-                        <option value="1">1 min</option>
-                        <option value="2">2 min</option>
-                        <option value="3">3 min</option>
-                        <option value="5">5 min</option>
+                <div className="sections">
+                    <label>System Irrigation Duration: </label>
+                    <select 
+                        value={settingState.irrigationDuration}
+                        onChange={(e) => handleDuration(e.target.value)}
+                        >
+                            <option value="1">1 min</option>
+                            <option value="2">2 min</option>
+                            <option value="3">3 min</option>
+                            <option value="5">5 min</option>
                     </select>
-
+                </div>
             </form>
             <table>
                 <tbody>
                     <tr>
                         <td><button 
                             type="button"
-                            className='ctrl-btn'
+                            className='system-btn'
                             onClick={ (saveSettings) }>Save Settings</button></td>
                     </tr>
                 </tbody>
             </table>
+            </div>     
         </div>
     );
 }

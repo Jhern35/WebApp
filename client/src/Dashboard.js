@@ -75,7 +75,7 @@ function Dashboard() {
       </nav>
 
       <button 
-        className="register-btn"
+        className="system-btn"
         onClick={() => setShowForm(!showForm)}
       >
         Register New System

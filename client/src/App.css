@@ -1,4 +1,4 @@
-/* ── Global reset ───────────────────────────── */
+/* --- Global reset ------------------------------- */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -15,7 +15,7 @@ body {
   padding-right: env(safe-area-inset-right);
 }
 
-/* ── Auth page ──────────────────────────────── */
+/* -- Auth page ----------------------------- */
 .auth-wrapper {
   min-height: 100vh;
   min-height: 100dvh; /* dynamic viewport height — fixes iOS address-bar */
@@ -127,7 +127,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* ── Dashboard layout ───────────────────────── */
+/* --- Dashboard layout --------------------------- */
 .dashboard-page {
   min-height: 100vh;
   min-height: 100dvh;
@@ -250,7 +250,7 @@ body {
   border-top: 4px solid #43a047;
 }
 
-/* ── Data table ─────────────────────────────── */
+/* --- Data table -------------------------------- */
 .table-wrapper {
   overflow-x: auto;        /* horizontal scroll on mobile */
   -webkit-overflow-scrolling: touch;
@@ -277,6 +277,72 @@ th {
   background: #2e7d32;
   color: #fff;
   font-weight: 600;
+}
+
+
+/* ----------- Control Panel ----------- */
+.control-System-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.panel {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.sections {
+  background: #ffffff;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px #141414;
+}
+
+.sections-threshold {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #374151;
+}
+
+.btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn.on {
+  background-color: #22c55e;
+  color: white;
+}
+
+.btn.off {
+  background-color: #ef4444;
+  color: white;
+}
+
+.save-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background-color: #3b82f6;
+  color: white;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.settings {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .good    { background-color: #c8e6c9; }
