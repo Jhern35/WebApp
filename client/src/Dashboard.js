@@ -74,38 +74,38 @@ function Dashboard() {
         <button className="signout-btn" onClick={signOut}>Sign Out</button>
       </nav>
 
-      <button 
-        className="system-btn"
-        onClick={() => setShowForm(!showForm)}
-      >
-        Register New System
-      </button>
-
-      {showForm && (
-        <div className="regular-form">
-          <input
-            type="text"
-            placeholder="System Name"
-            value={formData.name}
-            onChange={(e)=> setFormData({ ...formData, name: e.target.value })}
-          />
-
-          <input 
-            type="text"
-            placeholder="ESP32 ID"
-            value={formData.esp32Id}
-            onChange={(e) => setFormData({ ...formData, esp32Id: e.target.value })}
-          />
-          
-          <button onClick={handleRegister}>Submit</button>
-          </div>
-      )}
-
       <div className="dashboard-body">
         <h2 className="section-title">My Systems</h2>
 
         {systems.length === 0 ? (
-          <div className="empty-state">No irrigation systems registered yet.</div>
+          <div className="empty-state">No irrigation systems registered yet.
+              <button 
+                className="system-btn"
+                onClick={() => setShowForm(!showForm)}
+              >
+                +
+              </button>
+
+              {showForm && (
+                <div className="regular-form">
+                  <input
+                    type="text"
+                    placeholder="System Name"
+                    value={formData.name}
+                    onChange={(e)=> setFormData({ ...formData, name: e.target.value })}
+                  />
+
+                  <input 
+                    type="text"
+                    placeholder="ESP32 ID"
+                    value={formData.esp32Id}
+                    onChange={(e) => setFormData({ ...formData, esp32Id: e.target.value })}
+                  />
+                  
+                  <button onClick={handleRegister}>Submit</button>
+                  </div>
+              )}
+          </div>
         ) : (
           <div className="system-list">
             {systems.map((system) => (
@@ -116,10 +116,35 @@ function Dashboard() {
               >
                 {system.name}
               </button>
-            ))}
+            ))} 
+            <button 
+                className="system-btn"
+                onClick={() => setShowForm(!showForm)}
+              >
+                +
+              </button>
+
+              {showForm && (
+                <div className="regular-form">
+                  <input
+                    type="text"
+                    placeholder="System Name"
+                    value={formData.name}
+                    onChange={(e)=> setFormData({ ...formData, name: e.target.value })}
+                  />
+
+                  <input 
+                    type="text"
+                    placeholder="ESP32 ID"
+                    value={formData.esp32Id}
+                    onChange={(e) => setFormData({ ...formData, esp32Id: e.target.value })}
+                  />
+                  
+                  <button onClick={handleRegister}>Submit</button>
+                  </div>
+              )}
           </div>
         )}
-
         {selectedSystem && (
           <div className="system-data-card">
             <SystemData esp32Id={selectedSystem} />

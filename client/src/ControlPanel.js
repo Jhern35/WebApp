@@ -171,19 +171,23 @@ function ControlPanel() {
                 {/* For manual irrigation */}
                 <div className="sections">
                     <label> Manual Irrigation: </label>
-                    <button
+                    <div>
+                        <button
                         type="button"
                         className="btn"
                         onClick={() => manualIrrigation("Pump_On")}>
                         Turn On
                     </button>
+                    </div>
 
-                    <button
-                        type="button"
-                        className="btn"
-                        onClick={() => manualIrrigation("Pump_Off")}>
-                        Turn Off
-                    </button>
+                    <div>
+                        <button
+                            type="button"
+                            className="btn"
+                            onClick={() => manualIrrigation("Pump_Off")}>
+                            Turn Off
+                        </button>
+                    </div>
                 </div>
                 
                 

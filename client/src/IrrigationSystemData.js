@@ -46,11 +46,6 @@ function SystemData({ esp32Id }) {
       {data.length === 0 ? (
         <>
         <p>No data available yet</p>
-        <button
-              className = "ctrl-btn"
-              onClick = {() => goToControl(esp32Id)}
-            >
-              Control Panel</button>
           </>
       ) : (
         <div className="table-wrapper">
@@ -80,16 +75,15 @@ function SystemData({ esp32Id }) {
                   <td>{entry.soilMoistureAD}%</td>
                 </tr>
               ))}
-              <tr>
-                <td><button
-                  className = "ctrl-btn"
+            </tbody>
+            </table>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <button
+                  className = "system-btn"
                   onClick = {() => goToControl(esp32Id)}
                 >
                   Control Panel</button>
-                </td>
-              </tr>
-            </tbody>
-            </table>
+              </div>
         </div>
       )}
     </div>
