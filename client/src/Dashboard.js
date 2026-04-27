@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import SystemData from "./IrrigationSystemData";
 
@@ -23,7 +23,7 @@ function Dashboard() {
     navigate("/");
   };
 
-  const fetchSystems = async () => {
+  const fetchSystems = useCallback(async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/users/${userId}/systems`);
       const data = await res.json();
@@ -31,7 +31,7 @@ function Dashboard() {
     } catch (err) {
       console.error("Error fetching systems:", err);
     }
-  };
+  }, [userId]);
 
   const handleRegister = async () => {
     try {

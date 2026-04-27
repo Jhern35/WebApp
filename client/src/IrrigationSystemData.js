@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useCallback } from 'react';
 
 function displayValue(value, units) {
   if (value < 0) {
@@ -23,7 +24,7 @@ function SystemData({ esp32Id }) {
     navigate(`/system/${esp32Id}/control`);
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/system/${esp32Id}/data`);
       const json = await res.json();
@@ -32,7 +33,7 @@ function SystemData({ esp32Id }) {
     } catch (err) {
       console.error("Error fetching system data:", err);
     }
-  };
+  }, [esp32Id]);
 
   useEffect(() => {
     fetchData();

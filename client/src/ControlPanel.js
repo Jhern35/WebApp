@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -16,7 +16,7 @@ function ControlPanel() {
         moistureMax: 0.7,
     });
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             const res = await fetch(
                 `http://localhost:5000/api/system/${esp32Id}/control_panel`
@@ -39,7 +39,7 @@ function ControlPanel() {
         } catch (err) {
             console.error("Error fetching system data:", err);
         }
-    };
+    }, [esp32Id]);
 
     const [moistureMax, setMoistureMaxInput] = useState("");
     const [moistureMin, setMoistureMinInput] = useState("");
