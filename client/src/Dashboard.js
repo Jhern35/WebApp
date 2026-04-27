@@ -36,7 +36,7 @@ function Dashboard() {
 
   const handleRegister = async () => {
     try {
-      const res = await fetch(`h${API}/api/systems/register`, {
+      const res = await fetch(`${API}/api/systems/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
