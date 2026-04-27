@@ -46,6 +46,13 @@ function SystemData({ esp32Id }) {
       {data.length === 0 ? (
         <>
         <p>No data available yet</p>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <button
+                  className = "system-btn"
+                  onClick = {() => goToControl(esp32Id)}
+                >
+                  Control Panel</button>
+            </div>
           </>
       ) : (
         <div className="table-wrapper">

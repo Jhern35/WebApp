@@ -79,14 +79,13 @@ function Dashboard() {
 
         {systems.length === 0 ? (
           <div className="empty-state">No irrigation systems registered yet.
-              <button 
+            <div>
+                <button
                 className="system-btn"
-                onClick={() => setShowForm(!showForm)}
-              >
-                +
-              </button>
-
-              {showForm && (
+                  onClick={() => setShowForm(!showForm)}>
+                    Add System
+                  </button>
+                  {showForm && (
                 <div className="regular-form">
                   <input
                     type="text"
@@ -105,6 +104,7 @@ function Dashboard() {
                   <button onClick={handleRegister}>Submit</button>
                   </div>
               )}
+            </div>
           </div>
         ) : (
           <div className="system-list">
