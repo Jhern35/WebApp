@@ -4,6 +4,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import ControlPanel from "./ControlPanel";
 import "./App.css";
+import API from "./api";
 
 function LoginPage() {
   const [mode, setMode] = useState("login"); // "login" | "register"
@@ -17,7 +18,7 @@ function LoginPage() {
     setError("");
     setSuccess("");
     try {
-      await axios.post("http://localhost:5000/api/auth/register", { email, password });
+      await axios.post(`${API}/api/auth/register`, { email, password });
       setSuccess("Account created! You can now log in.");
       setMode("login");
     } catch (err) {
@@ -29,7 +30,7 @@ function LoginPage() {
     setError("");
     setSuccess("");
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", { email, password });
+      const res = await axios.post(`${API}/api/auth/login`, { email, password });
       localStorage.setItem("token", res.data.token);
       navigate("/dashboard");
     } catch (err) {

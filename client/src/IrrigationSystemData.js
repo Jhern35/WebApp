@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useCallback } from 'react';
+import API from "./api";
 
 function displayValue(value, units) {
   if (value < 0) {
@@ -26,7 +27,7 @@ function SystemData({ esp32Id }) {
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/system/${esp32Id}/data`);
+      const res = await fetch(`${API}/api/system/${esp32Id}/data`);
       const json = await res.json();
       setSystemName(json.system);
       setData(json.recentData);

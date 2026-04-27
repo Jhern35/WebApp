@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import API from "./api";
 
 function ControlPanel() {
     const { esp32Id } = useParams();
@@ -19,7 +20,7 @@ function ControlPanel() {
     const fetchData = useCallback(async () => {
         try {
             const res = await fetch(
-                `http://localhost:5000/api/system/${esp32Id}/control_panel`
+                `${API}/api/system/${esp32Id}/control_panel`
             );
             const json = await res.json();
 
@@ -123,7 +124,7 @@ function ControlPanel() {
 
     const manualIrrigation = async (command) => {
         try{
-            await axios.post(`http://localhost:5000/api/system/${esp32Id}/command`, {
+            await axios.post(`${API}/api/system/${esp32Id}/command`, {
                 command
             });
             console.log("POST sent");
@@ -135,7 +136,7 @@ function ControlPanel() {
     const saveSettings = async () => {
         try {
             const res = await fetch (
-                `http://localhost:5000/api/system/${esp32Id}/control_panel`,
+                `${API}/api/system/${esp32Id}/control_panel`,
                 {
                     method: "PATCH",
                     headers: {

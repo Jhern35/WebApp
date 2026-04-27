@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import SystemData from "./IrrigationSystemData";
+import API from "./api";
 
 function Dashboard() {
   const [systems, setSystems] = useState([]);
@@ -25,7 +26,7 @@ function Dashboard() {
 
   const fetchSystems = useCallback(async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${userId}/systems`);
+      const res = await fetch(`${API}/api/users/${userId}/systems`);
       const data = await res.json();
       setSystems(data);
     } catch (err) {
@@ -35,7 +36,7 @@ function Dashboard() {
 
   const handleRegister = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/systems/register", {
+      const res = await fetch(`h${API}/api/systems/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

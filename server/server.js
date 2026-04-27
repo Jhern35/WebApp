@@ -12,7 +12,11 @@ console.log("JWT_SECRET:", process.env.JWT_SECRET);
 console.log("MONGO_URI:", process.env.MONGO_URI);
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: [
+    "http://localhost:3000",
+    "https://mysmartirrigation.com",
+    "https://www.mysmartirrigation.com"
+  ],
   methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 };
