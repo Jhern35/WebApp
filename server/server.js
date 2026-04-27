@@ -8,7 +8,6 @@ const mqtt = require("mqtt");
 //const { default: SystemData } = require("../client/src/IrrigationSystemData");
 
 const app = express();
-MONGO_URI = "mongodb+srv://jhern3523_db_user:7VlVPpsF0IYkbnjz@seniordesign2026.9tixeoo.mongodb.net/?appName=SeniorDesign2026";
 console.log("JWT_SECRET:", process.env.JWT_SECRET);
 console.log("MONGO_URI:", process.env.MONGO_URI);
 
