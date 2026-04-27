@@ -50,7 +50,7 @@ function ControlPanel() {
         if (esp32Id) {
             fetchData();
         }
-    }, [esp32Id]);
+    }, [esp32Id, fetchData]);
 
     useEffect(() => {
         setMoistureMaxInput(

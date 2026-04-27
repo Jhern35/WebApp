@@ -38,7 +38,7 @@ function SystemData({ esp32Id }) {
     fetchData();
     const interval = setInterval(fetchData, 120000);
     return () => clearInterval(interval);
-  }, [esp32Id]);
+  }, [esp32Id, fetchData]);
 
   return (
     <div>

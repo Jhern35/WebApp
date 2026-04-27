@@ -64,7 +64,7 @@ function Dashboard() {
 
   useEffect(() => {
     fetchSystems();
-  }, []);
+  }, [fetchSystems]);
 
   return (
     <div className="dashboard-page">

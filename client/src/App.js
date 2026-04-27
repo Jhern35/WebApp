@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Routes, Route, useNavigate, BrowserRouter } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import ControlPanel from "./ControlPanel";
 import "./App.css";
