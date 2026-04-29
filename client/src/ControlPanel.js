@@ -266,17 +266,11 @@ function ControlPanel() {
                     </select>
                 </div>
             </form>
-            <table>
-                <tbody>
-                    <tr>
-                        <td><button 
-                            type="button"
-                            className='system-btn'
-                            onClick={ (saveSettings) }>Save Settings</button></td>
-                    </tr>
-                </tbody>
-            </table>
-            </div>     
+                    <button 
+                        type="button"
+                        className="system-btn"
+                        onClick={ (saveSettings) }>Save Settings</button>
+                </div>     
         </div>
     );
 }
